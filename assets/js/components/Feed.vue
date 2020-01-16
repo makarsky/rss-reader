@@ -1,8 +1,7 @@
 <template>
     <div>
-        Home
-        <router-link to="login">Log In</router-link>
-        <router-link to="registration">Registration</router-link>
+        Feed
+        Log Out
     </div>
 </template>
 
