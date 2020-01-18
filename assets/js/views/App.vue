@@ -11,10 +11,9 @@
 
 <script>
     export default {
-        name: "App"
+        name: 'App',
+        props: {
+            source: String,
+        }
     }
 </script>
-
-<style scoped>
-
-</style>
