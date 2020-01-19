@@ -27,6 +27,7 @@
                     <v-form>
                         <v-text-field
                                 label="Email"
+                                v-model="email"
                                 name="login"
                                 prepend-icon="person"
                                 type="text"
@@ -34,6 +35,7 @@
 
                         <v-text-field
                                 id="password"
+                                v-model="password"
                                 label="Password"
                                 name="password"
                                 prepend-icon="lock"
@@ -44,7 +46,10 @@
                 <v-card-actions>
                     <router-link to="registration">Registration</router-link>
                     <v-spacer/>
-                    <v-btn color="primary">Log In</v-btn>
+                    <v-btn
+                            color="primary"
+                            @click="performLogin()"
+                    >Log In</v-btn>
                 </v-card-actions>
             </v-card>
         </v-col>
@@ -53,7 +58,50 @@
 
 <script>
     export default {
-        name: 'Login'
+        name: 'Login',
+        data() {
+            return {
+                email: "",
+                password: ""
+            };
+        },
+        computed: {
+            isLoading() {
+                return this.$store.getters["security/isLoading"];
+            },
+            hasError() {
+                return this.$store.getters["security/hasError"];
+            },
+            error() {
+                return this.$store.getters["security/error"];
+            }
+        },
+        created() {
+            let redirect = this.$route.query.redirect;
+
+            if (this.$store.getters["security/isAuthenticated"]) {
+                if (typeof redirect !== "undefined") {
+                    this.$router.push({path: redirect});
+                } else {
+                    this.$router.push({path: "/feed"});
+                }
+            }
+        },
+        methods: {
+            async performLogin() {
+                let payload = {email: this.$data.email, password: this.$data.password},
+                    redirect = this.$route.query.redirect;
+
+                await this.$store.dispatch("security/login", payload);
+                if (!this.$store.getters["security/hasError"]) {
+                    if (typeof redirect !== "undefined") {
+                        this.$router.push({path: redirect});
+                    } else {
+                        this.$router.push({path: "/feed"});
+                    }
+                }
+            }
+        }
     }
 </script>
 
