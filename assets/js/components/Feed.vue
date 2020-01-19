@@ -38,7 +38,7 @@
                             <router-link to="login">Read on</router-link>
                         </v-card-actions>
                     </v-card>
-                </v-col>yarn.lock
+                </v-col>
             </v-row>
         </v-col>
     </v-row>
