@@ -15,7 +15,7 @@
                         flat
                 >
                     <v-toolbar-title>Login form</v-toolbar-title>
-                    <v-spacer />
+                    <v-spacer/>
                     <v-tooltip>
                         <template v-slot:activator="{ on }">
                             <v-icon>mdi-key</v-icon>
@@ -49,7 +49,9 @@
                     <v-btn
                             color="primary"
                             @click="performLogin()"
-                    >Log In</v-btn>
+                    >
+                        Log In
+                    </v-btn>
                 </v-card-actions>
             </v-card>
         </v-col>
