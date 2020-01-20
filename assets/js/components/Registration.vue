@@ -20,21 +20,16 @@
                     <v-form>
                         <v-text-field
                                 label="Email"
-                                name="login"
+                                v-model="email"
+                                name="email"
                                 prepend-icon="person"
                                 type="text"
                         />
                         <v-text-field
                                 id="password"
+                                v-model="plainPassword"
                                 label="Password"
                                 name="password"
-                                prepend-icon="lock"
-                                type="password"
-                        />
-                        <v-text-field
-                                id="password"
-                                label="Repeat Password"
-                                name="password2"
                                 prepend-icon="lock"
                                 type="password"
                         />
@@ -43,7 +38,12 @@
                 <v-card-actions>
                     <router-link to="login">Log In</router-link>
                     <v-spacer/>
-                    <v-btn color="primary">Register</v-btn>
+                    <v-btn
+                            color="primary"
+                            @click="register()"
+                    >
+                        Register
+                    </v-btn>
                 </v-card-actions>
             </v-card>
         </v-col>
@@ -52,7 +52,42 @@
 
 <script>
     export default {
-        name: 'Registration'
+        name: 'Registration',
+        data() {
+            return {
+                email: "",
+                plainPassword: "",
+            };
+        },
+        computed: {
+            isLoading() {
+                return this.$store.getters["security/isLoading"];
+            },
+            hasError() {
+                return this.$store.getters["security/hasError"];
+            },
+            error() {
+                return this.$store.getters["security/error"];
+            }
+        },
+        methods: {
+            async register() {
+                let payload = {
+                    email: this.$data.email,
+                    plainPassword: this.$data.plainPassword,
+                };
+                let redirect = this.$route.query.redirect;
+
+                await this.$store.dispatch("security/register", payload);
+                if (!this.$store.getters["security/hasError"]) {
+                    if (typeof redirect !== "undefined") {
+                        this.$router.push({path: redirect});
+                    } else {
+                        this.$router.push({path: "/login"});
+                    }
+                }
+            }
+        }
     }
 </script>
 

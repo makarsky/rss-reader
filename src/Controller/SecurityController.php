@@ -35,12 +35,4 @@ class SecurityController extends AbstractController
 
         return new JsonResponse($data, Response::HTTP_OK, [], true);
     }
-
-    /**
-     * @Route("/api/v1/register", name="register")
-     */
-    public function registerAction(): JsonResponse
-    {
-        return new JsonResponse([], Response::HTTP_OK, [], true);
-    }
 }
