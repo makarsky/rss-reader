@@ -3,9 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
@@ -32,6 +30,7 @@ class BaseController extends AbstractController
         /** @var User|null $user */
         $user = $this->getUser();
         $data = null;
+
         if (! empty($user)) {
             $userClone = clone $user;
             $userClone->setPassword('');
@@ -42,14 +41,5 @@ class BaseController extends AbstractController
             'isAuthenticated' => json_encode(!empty($user)),
             'user' => $data ?? json_encode($data),
         ]);
-    }
-
-    /**
-     * @Route("/api/v1/data", name="data")
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
-    public function jsonAction(): JsonResponse
-    {
-        return $this->json(['data' => 122]);
     }
 }
