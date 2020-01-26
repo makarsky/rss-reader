@@ -22,14 +22,17 @@
                     />
                 </div>
             </v-row>
+            <frequent-words
+                    v-show="!isLoading"
+                    :frequent-words="frequentWords"
+            />
             <v-row v-for="feedItem in feedItems" v-bind:key="feedItem.link">
                 <v-col>
-                    <v-card class="elevation-12">
+                    <v-card class="">
                         <v-toolbar flat>
                             <v-toolbar-title>{{feedItem.title}}</v-toolbar-title>
                         </v-toolbar>
                         <v-card-text v-html="feedItem.description">
-                            <v-progress-circular :size="70" indeterminate class="primary--text"/>
                         </v-card-text>
                         <v-card-actions>
                             <v-spacer/>
@@ -43,11 +46,14 @@
 </template>
 
 <script>
+    import FrequentWords from '../components/FrequentWords';
     export default {
         name: 'Feed',
+        components: {FrequentWords},
         data() {
             return {
                 feedItems: [],
+                frequentWords: null,
             };
         },
         computed: {
@@ -58,6 +64,7 @@
         async created() {
             let response = await this.$store.dispatch('feed/load');
             this.feedItems = response.feed.items;
+            this.frequentWords = response.frequentWords;
         }
     }
 </script>
