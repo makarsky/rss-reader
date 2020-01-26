@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import store from './store';
-import Feed from './components/Feed';
-import Login from './components/Login';
-import Registration from './components/Registration';
+import Feed from './views/Feed';
+import Login from './views/Login';
+import Registration from './views/Registration';
 
 Vue.use(VueRouter);
 
