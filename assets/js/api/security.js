@@ -2,13 +2,13 @@ import axios from 'axios';
 
 export default {
     login(email, password) {
-        return axios.post('/api/v1/login', {
+        return axios.post('/auth/login', {
             email: email,
             password: password,
         });
     },
     register(email, plainPassword) {
-        return axios.post('/api/v1/register', {
+        return axios.post('/auth/register', {
             email: email,
             plainPassword: plainPassword,
         });

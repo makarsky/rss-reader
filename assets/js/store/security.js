@@ -3,7 +3,12 @@ import SecurityAPI from '../api/security';
 const AUTHENTICATING = 'AUTHENTICATING',
     AUTHENTICATING_SUCCESS = 'AUTHENTICATING_SUCCESS',
     AUTHENTICATING_ERROR = 'AUTHENTICATING_ERROR',
-    PROVIDING_DATA_ON_REFRESH_SUCCESS = 'PROVIDING_DATA_ON_REFRESH_SUCCESS';
+    PROVIDING_DATA_ON_REFRESH_SUCCESS = 'PROVIDING_DATA_ON_REFRESH_SUCCESS',
+    RESET_STATE = 'RESET_STATE';
+
+const REGISTRATION = 'REGISTRATION',
+    REGISTRATION_SUCCESS = 'REGISTRATION_SUCCESS',
+    REGISTRATION_ERROR = 'REGISTRATION_ERROR';
 
 export default {
     namespaced: true,
@@ -26,11 +31,6 @@ export default {
         isAuthenticated(state) {
             return state.isAuthenticated;
         },
-        hasRole(state) {
-            return role => {
-                return state.user.roles.indexOf(role) !== -1;
-            }
-        }
     },
     mutations: {
         [AUTHENTICATING](state) {
@@ -56,7 +56,31 @@ export default {
             state.error = null;
             state.isAuthenticated = payload.isAuthenticated;
             state.user = payload.user;
-        }
+        },
+        [REGISTRATION](state) {
+            state.isLoading = true;
+            state.error = null;
+            state.isAuthenticated = false;
+            state.user = null;
+        },
+        [REGISTRATION_SUCCESS](state) {
+            state.isLoading = false;
+            state.error = null;
+            state.isAuthenticated = false;
+            state.user = null;
+        },
+        [REGISTRATION_ERROR](state, error) {
+            state.isLoading = false;
+            state.error = error;
+            state.isAuthenticated = false;
+            state.user = null;
+        },
+        [RESET_STATE](state, error) {
+            state.isLoading = false;
+            state.error = null;
+            state.isAuthenticated = false;
+            state.user = null;
+        },
     },
     actions: {
         async login({commit}, payload) {
@@ -71,15 +95,23 @@ export default {
             }
         },
         async register({commit}, payload) {
-            commit(AUTHENTICATING);
+            commit(REGISTRATION);
             try {
                 let response = await SecurityAPI.register(payload.email, payload.plainPassword);
-                commit(AUTHENTICATING_SUCCESS, response.data);
+
+                if (response.data.errors) {
+                    commit(REGISTRATION_ERROR, response.data.errors[0]);
+                    return null;
+                }
+                commit(REGISTRATION_SUCCESS);
                 return response.data;
             } catch (error) {
-                commit(AUTHENTICATING_ERROR, error);
+                commit(REGISTRATION_ERROR, error);
                 return null;
             }
+        },
+        resetState({commit}, payload) {
+            commit(RESET_STATE);
         },
         onRefresh({commit}, payload) {
             commit(PROVIDING_DATA_ON_REFRESH_SUCCESS, payload);

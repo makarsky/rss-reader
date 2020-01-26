@@ -33,6 +33,9 @@
                                 prepend-icon="lock"
                                 type="password"
                         />
+                        <div v-if="hasError" class="error--text">
+                            {{ error }}
+                        </div>
                     </v-form>
                 </v-card-text>
                 <v-card-actions>
@@ -42,6 +45,11 @@
                             color="primary"
                             @click="register()"
                     >
+                        <v-progress-circular
+                                v-if="isLoading"
+                                :size="20"
+                                indeterminate
+                        />
                         Register
                     </v-btn>
                 </v-card-actions>
@@ -55,20 +63,23 @@
         name: 'Registration',
         data() {
             return {
-                email: "",
-                plainPassword: "",
+                email: '',
+                plainPassword: '',
             };
         },
         computed: {
             isLoading() {
-                return this.$store.getters["security/isLoading"];
+                return this.$store.getters['security/isLoading'];
             },
             hasError() {
-                return this.$store.getters["security/hasError"];
+                return this.$store.getters['security/hasError'];
             },
             error() {
-                return this.$store.getters["security/error"];
+                return this.$store.getters['security/error'];
             }
+        },
+        async created() {
+            await this.$store.dispatch('security/resetState');
         },
         methods: {
             async register() {
@@ -76,15 +87,11 @@
                     email: this.$data.email,
                     plainPassword: this.$data.plainPassword,
                 };
-                let redirect = this.$route.query.redirect;
 
-                await this.$store.dispatch("security/register", payload);
-                if (!this.$store.getters["security/hasError"]) {
-                    if (typeof redirect !== "undefined") {
-                        this.$router.push({path: redirect});
-                    } else {
-                        this.$router.push({path: "/login"});
-                    }
+                await this.$store.dispatch('security/register', payload);
+
+                if (!this.$store.getters['security/hasError']) {
+                    this.$router.push({path: '/login'});
                 }
             }
         }
