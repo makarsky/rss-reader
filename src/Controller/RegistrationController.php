@@ -26,7 +26,7 @@ class RegistrationController extends AbstractController
     }
 
     /**
-     * @Route("/api/v1/register", name="register")
+     * @Route("/auth/register", name="register")
      * @param Request $request
      * @param UserPasswordEncoderInterface $passwordEncoder
      * @return Response
@@ -64,6 +64,6 @@ class RegistrationController extends AbstractController
             $errors[] = $formError->getMessage();
         }
 
-        return new JsonResponse(json_encode(['errors' => $errors]), Response::HTTP_BAD_REQUEST, [], true);
+        return new JsonResponse(json_encode(['errors' => $errors]), Response::HTTP_OK, [], true);
     }
 }

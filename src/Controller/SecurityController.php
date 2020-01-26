@@ -23,7 +23,7 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/api/v1/login", name="login")
+     * @Route("/auth/login", name="login")
      */
     public function loginAction(): JsonResponse
     {

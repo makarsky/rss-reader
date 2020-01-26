@@ -41,6 +41,9 @@
                                 prepend-icon="lock"
                                 type="password"
                         />
+                        <div v-if="hasError" class="error--text">
+                            Error: wrong email or password
+                        </div>
                     </v-form>
                 </v-card-text>
                 <v-card-actions>
@@ -69,23 +72,24 @@
         },
         computed: {
             isLoading() {
-                return this.$store.getters["security/isLoading"];
+                return this.$store.getters['security/isLoading'];
             },
             hasError() {
-                return this.$store.getters["security/hasError"];
+                return this.$store.getters['security/hasError'];
             },
             error() {
-                return this.$store.getters["security/error"];
+                return this.$store.getters['security/error'];
             }
         },
-        created() {
+        async created() {
+            await this.$store.dispatch('security/resetState');
             let redirect = this.$route.query.redirect;
 
-            if (this.$store.getters["security/isAuthenticated"]) {
-                if (typeof redirect !== "undefined") {
+            if (this.$store.getters['security/isAuthenticated']) {
+                if (typeof redirect !== 'undefined') {
                     this.$router.push({path: redirect});
                 } else {
-                    this.$router.push({path: "/feed"});
+                    this.$router.push({path: '/feed'});
                 }
             }
         },
@@ -94,12 +98,12 @@
                 let payload = {email: this.$data.email, password: this.$data.password},
                     redirect = this.$route.query.redirect;
 
-                await this.$store.dispatch("security/login", payload);
-                if (!this.$store.getters["security/hasError"]) {
-                    if (typeof redirect !== "undefined") {
+                await this.$store.dispatch('security/login', payload);
+                if (!this.$store.getters['security/hasError']) {
+                    if (typeof redirect !== 'undefined') {
                         this.$router.push({path: redirect});
                     } else {
-                        this.$router.push({path: "/feed"});
+                        this.$router.push({path: '/feed'});
                     }
                 }
             }

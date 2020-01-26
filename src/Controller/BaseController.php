@@ -23,7 +23,7 @@ class BaseController extends AbstractController
 
     /**
      * @Route("/", name="index")
-     * @Route("/{vueRouting}", name="vue_page", requirements={"vueRouting"="^(?!.*_wdt|_profiler|api).+"})
+     * @Route("/{vueRouting}", name="vue_page", requirements={"vueRouting"="^(?!.*_wdt|_profiler|api|auth).+"})
      */
     public function indexAction(): Response
     {
