@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Service\RssWordCounterService;
 use FeedIo\Feed;
 use FeedIo\FeedIo;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,9 +16,15 @@ class FeedController extends AbstractController
      */
     private $feedIo;
 
-    public function __construct(FeedIo $feedIo)
+    /**
+     * @var RssWordCounterService
+     */
+    private $rssWordCounterService;
+
+    public function __construct(FeedIo $feedIo, RssWordCounterService $rssWordCounterService)
     {
         $this->feedIo = $feedIo;
+        $this->rssWordCounterService = $rssWordCounterService;
     }
 
     /**
@@ -29,7 +36,7 @@ class FeedController extends AbstractController
 
         $feed = $this->feedIo->read($url, new Feed())->getFeed();
 
-        $frequentWords = null;
+        $frequentWords = $this->rssWordCounterService->getFrequentWords($feed);
 
         return $this->json([
             'feed' => $feed,
