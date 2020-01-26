@@ -66,4 +66,17 @@ class RegistrationController extends AbstractController
 
         return new JsonResponse(json_encode(['errors' => $errors]), Response::HTTP_OK, [], true);
     }
+
+    /**
+     * @Route("/auth/check-email", name="checkEmail")
+     * @param Request $request
+     * @return Response
+     */
+    public function checkEmailAction(Request $request): Response
+    {
+        $email = trim(json_decode($request->getContent())['email']);
+        $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(['email' => $email]);
+
+        return new JsonResponse(['available' => is_null($user)]);
+    }
 }
