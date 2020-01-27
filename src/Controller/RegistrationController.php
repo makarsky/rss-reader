@@ -74,7 +74,7 @@ class RegistrationController extends AbstractController
      */
     public function checkEmailAction(Request $request): Response
     {
-        $email = trim(json_decode($request->getContent())['email']);
+        $email = trim(json_decode($request->getContent(), true)['email']);
         $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(['email' => $email]);
 
         return new JsonResponse(['available' => is_null($user)]);
