@@ -13,4 +13,9 @@ export default {
             plainPassword: plainPassword,
         });
     },
+    checkEmail(email) {
+        return axios.post('/auth/check-email', {
+            email: email,
+        });
+    },
 }

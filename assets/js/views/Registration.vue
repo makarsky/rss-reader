@@ -24,6 +24,7 @@
                                 name="email"
                                 prepend-icon="person"
                                 type="text"
+                                @input="checkEmail"
                         />
                         <v-text-field
                                 id="password"
@@ -93,6 +94,10 @@
                 if (!this.$store.getters['security/hasError']) {
                     this.$router.push({path: '/login'});
                 }
+            },
+            checkEmail() {
+                console.log(this.email);
+                this.$store.dispatch('security/checkEmail', {email: this.email});
             }
         }
     }

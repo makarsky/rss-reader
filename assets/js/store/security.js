@@ -110,6 +110,20 @@ export default {
                 return null;
             }
         },
+        async checkEmail({commit}, payload) {
+            commit(RESET_STATE);
+            try {
+                let response = await SecurityAPI.checkEmail(payload.email);
+
+                if (!response.data.available) {
+                    commit(REGISTRATION_ERROR, 'There is already an account with this email');
+                }
+                return response.data;
+            } catch (error) {
+                commit(REGISTRATION_ERROR, error);
+                return null;
+            }
+        },
         resetState({commit}, payload) {
             commit(RESET_STATE);
         },
