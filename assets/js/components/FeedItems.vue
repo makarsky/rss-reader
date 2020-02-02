@@ -22,7 +22,7 @@
     export default {
         name: 'FeedItems',
         props: {
-            feedItems: [],
+            feedItems: Array,
         },
     }
 </script>
