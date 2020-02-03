@@ -70,17 +70,14 @@
         },
         computed: {
             isLoading() {
-                return this.$store.getters['security/isLoading'];
+                return this.$store.getters['registration/isLoading'];
             },
             hasError() {
-                return this.$store.getters['security/hasError'];
+                return this.$store.getters['registration/hasError'];
             },
             error() {
-                return this.$store.getters['security/error'];
+                return this.$store.getters['registration/error'];
             }
-        },
-        async created() {
-            await this.$store.dispatch('security/resetState');
         },
         methods: {
             async register() {
@@ -89,15 +86,14 @@
                     plainPassword: this.$data.plainPassword,
                 };
 
-                await this.$store.dispatch('security/register', payload);
+                await this.$store.dispatch('registration/register', payload);
 
-                if (!this.$store.getters['security/hasError']) {
+                if (!this.$store.getters['registration/hasError']) {
                     this.$router.push({path: '/login'});
                 }
             },
             checkEmail() {
-                console.log(this.email);
-                this.$store.dispatch('security/checkEmail', {email: this.email});
+                this.$store.dispatch('registration/checkEmail', {email: this.email});
             }
         }
     }
