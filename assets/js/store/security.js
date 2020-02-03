@@ -3,12 +3,7 @@ import SecurityAPI from '../api/security';
 const AUTHENTICATING = 'AUTHENTICATING',
     AUTHENTICATING_SUCCESS = 'AUTHENTICATING_SUCCESS',
     AUTHENTICATING_ERROR = 'AUTHENTICATING_ERROR',
-    PROVIDING_DATA_ON_REFRESH_SUCCESS = 'PROVIDING_DATA_ON_REFRESH_SUCCESS',
-    RESET_STATE = 'RESET_STATE';
-
-const REGISTRATION = 'REGISTRATION',
-    REGISTRATION_SUCCESS = 'REGISTRATION_SUCCESS',
-    REGISTRATION_ERROR = 'REGISTRATION_ERROR';
+    PROVIDING_DATA_ON_REFRESH_SUCCESS = 'PROVIDING_DATA_ON_REFRESH_SUCCESS';
 
 export default {
     namespaced: true,
@@ -57,30 +52,6 @@ export default {
             state.isAuthenticated = payload.isAuthenticated;
             state.user = payload.user;
         },
-        [REGISTRATION](state) {
-            state.isLoading = true;
-            state.error = null;
-            state.isAuthenticated = false;
-            state.user = null;
-        },
-        [REGISTRATION_SUCCESS](state) {
-            state.isLoading = false;
-            state.error = null;
-            state.isAuthenticated = false;
-            state.user = null;
-        },
-        [REGISTRATION_ERROR](state, error) {
-            state.isLoading = false;
-            state.error = error;
-            state.isAuthenticated = false;
-            state.user = null;
-        },
-        [RESET_STATE](state, error) {
-            state.isLoading = false;
-            state.error = null;
-            state.isAuthenticated = false;
-            state.user = null;
-        },
     },
     actions: {
         async login({commit}, payload) {
@@ -93,39 +64,6 @@ export default {
                 commit(AUTHENTICATING_ERROR, error);
                 return null;
             }
-        },
-        async register({commit}, payload) {
-            commit(REGISTRATION);
-            try {
-                let response = await SecurityAPI.register(payload.email, payload.plainPassword);
-
-                if (response.data.errors) {
-                    commit(REGISTRATION_ERROR, response.data.errors[0]);
-                    return null;
-                }
-                commit(REGISTRATION_SUCCESS);
-                return response.data;
-            } catch (error) {
-                commit(REGISTRATION_ERROR, error);
-                return null;
-            }
-        },
-        async checkEmail({commit}, payload) {
-            commit(RESET_STATE);
-            try {
-                let response = await SecurityAPI.checkEmail(payload.email);
-
-                if (!response.data.available) {
-                    commit(REGISTRATION_ERROR, 'There is already an account with this email');
-                }
-                return response.data;
-            } catch (error) {
-                commit(REGISTRATION_ERROR, error);
-                return null;
-            }
-        },
-        resetState({commit}, payload) {
-            commit(RESET_STATE);
         },
         onRefresh({commit}, payload) {
             commit(PROVIDING_DATA_ON_REFRESH_SUCCESS, payload);

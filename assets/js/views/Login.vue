@@ -82,7 +82,6 @@
             }
         },
         async created() {
-            await this.$store.dispatch('security/resetState');
             let redirect = this.$route.query.redirect;
 
             if (this.$store.getters['security/isAuthenticated']) {

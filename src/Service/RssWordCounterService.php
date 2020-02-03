@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use Exception;
 use FeedIo\FeedInterface;
 use Symfony\Component\Finder\Finder;
 
@@ -26,7 +27,7 @@ class RssWordCounterService
             return json_decode($file->getContents(), true);
         }
 
-        throw new \Exception('most_common_words.json not found');
+        throw new Exception('most_common_words.json not found');
     }
 
     public function getFrequentWords(FeedInterface $feed, int $limit = 10): array
