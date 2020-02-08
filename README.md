@@ -13,4 +13,4 @@ Installation:
 
 Launch:
 1. symfony server:start
-2. encore dev-server
+2. yarn encore dev-server
