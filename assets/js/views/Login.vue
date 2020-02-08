@@ -23,8 +23,8 @@
                         <span>Source</span>
                     </v-tooltip>
                 </v-toolbar>
-                <v-card-text>
-                    <v-form>
+                <v-form @submit.prevent="performLogin">
+                    <v-card-text>
                         <v-text-field
                                 label="Email"
                                 v-model="email"
@@ -41,22 +41,37 @@
                                 prepend-icon="lock"
                                 type="password"
                         />
-                        <div v-if="hasError" class="error--text">
-                            Error: wrong email or password
-                        </div>
-                    </v-form>
-                </v-card-text>
-                <v-card-actions>
-                    <router-link to="registration">Registration</router-link>
-                    <v-spacer/>
-                    <v-btn
-                            color="primary"
-                            @click="performLogin()"
-                    >
-                        Log In
-                    </v-btn>
-                </v-card-actions>
+                    </v-card-text>
+                    <v-card-actions>
+                        <router-link to="registration">Registration</router-link>
+                        <v-spacer/>
+                        <v-btn
+                                type="submit"
+                                :disabled="isLoading"
+                                :loading="isLoading"
+                                color="primary"
+                        >
+                            Log In
+                        </v-btn>
+                    </v-card-actions>
+                </v-form>
             </v-card>
+            <v-snackbar
+                    v-model="snackbar"
+                    :top="true"
+                    :bottom="false"
+                    :color="'error'"
+                    :timeout="2000"
+            >
+                Invalid credentials
+                <v-btn
+                        dark
+                        text
+                        @click="snackbar = false"
+                >
+                    Close
+                </v-btn>
+            </v-snackbar>
         </v-col>
     </v-row>
 </template>
@@ -66,8 +81,9 @@
         name: 'Login',
         data() {
             return {
-                email: "",
-                password: ""
+                email: '',
+                password: '',
+                snackbar: false,
             };
         },
         computed: {
@@ -98,12 +114,15 @@
                     redirect = this.$route.query.redirect;
 
                 await this.$store.dispatch('security/login', payload);
+
                 if (!this.$store.getters['security/hasError']) {
                     if (typeof redirect !== 'undefined') {
                         this.$router.push({path: redirect});
                     } else {
                         this.$router.push({path: '/feed'});
                     }
+                } else {
+                    this.snackbar = true;
                 }
             }
         }
