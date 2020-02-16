@@ -10,7 +10,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class RegistrationController extends AbstractController
@@ -20,6 +19,10 @@ class RegistrationController extends AbstractController
      */
     private $serializer;
 
+    /**
+     * RegistrationController constructor.
+     * @param SerializerInterface $serializer
+     */
     public function __construct(SerializerInterface $serializer)
     {
         $this->serializer = $serializer;
@@ -51,20 +54,16 @@ class RegistrationController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-            $userClone = clone $user;
-            $userClone->setPassword('');
-            $data = $this->serializer->serialize($userClone, JsonEncoder::FORMAT);
-
-            return new JsonResponse($data, Response::HTTP_OK, [], true);
+            return new JsonResponse([], Response::HTTP_OK, []);
         }
 
         $errors = [];
 
         foreach ($form->getErrors(true, true) as $formError) {
-            $errors[] = $formError->getMessage();
+            $errors[$formError->getOrigin()->getName()] = $formError->getMessage();
         }
 
-        return new JsonResponse(json_encode(['errors' => $errors]), Response::HTTP_OK, [], true);
+        return new JsonResponse(['errors' => $errors], Response::HTTP_OK, []);
     }
 
     /**
@@ -77,6 +76,12 @@ class RegistrationController extends AbstractController
         $email = trim(json_decode($request->getContent(), true)['email']);
         $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(['email' => $email]);
 
-        return new JsonResponse(['available' => is_null($user)]);
+        $data = is_null($user) ? [] : [
+            'errors' => [
+                'email' => 'There is already an account with this email'
+            ]
+        ];
+
+        return new JsonResponse($data, Response::HTTP_OK);
     }
 }

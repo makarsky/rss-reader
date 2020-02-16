@@ -17,26 +17,28 @@
                     <v-toolbar-title>Registration form</v-toolbar-title>
                 </v-toolbar>
                 <v-card-text>
-                    <v-form>
+                    <v-form v-model="valid" ref="form" @submit.prevent="register">
                         <v-text-field
                                 label="Email"
                                 v-model="email"
+                                :rules="emailRules"
                                 name="email"
                                 prepend-icon="person"
                                 type="text"
                                 @input="checkEmail"
+                                required
                         />
                         <v-text-field
                                 id="password"
                                 v-model="plainPassword"
+                                :rules="plainPasswordRules"
                                 label="Password"
                                 name="password"
                                 prepend-icon="lock"
                                 type="password"
+                                @input="resetError('plainPassword')"
+                                required
                         />
-                        <div v-if="hasError" class="error--text">
-                            {{ error }}
-                        </div>
                     </v-form>
                 </v-card-text>
                 <v-card-actions>
@@ -64,6 +66,7 @@
         name: 'Registration',
         data() {
             return {
+                valid: false,
                 email: '',
                 plainPassword: '',
             };
@@ -72,12 +75,22 @@
             isLoading() {
                 return this.$store.getters['registration/isLoading'];
             },
-            hasError() {
-                return this.$store.getters['registration/hasError'];
+            hasRegistrationErrors() {
+                return this.$store.getters['registration/hasRegistrationErrors'];
             },
-            error() {
-                return this.$store.getters['registration/error'];
-            }
+            registrationErrors() {
+                return this.$store.getters['registration/registrationErrors'];
+            },
+            emailRules() {
+                return [
+                    v => !this.hasRegistrationErrors || !this.registrationErrors.email || this.registrationErrors.email,
+                ];
+            },
+            plainPasswordRules() {
+                return [
+                    v => !this.hasRegistrationErrors || !this.registrationErrors.plainPassword || this.registrationErrors.plainPassword,
+                ];
+            },
         },
         methods: {
             async register() {
@@ -88,12 +101,19 @@
 
                 await this.$store.dispatch('registration/register', payload);
 
-                if (!this.$store.getters['registration/hasError']) {
+                if (!this.$store.getters['registration/hasRegistrationErrors']) {
                     this.$router.push({path: '/login'});
+                } else {
+                    this.$refs.form.validate();
                 }
             },
-            checkEmail() {
-                this.$store.dispatch('registration/checkEmail', {email: this.email});
+            async checkEmail() {
+                await this.$store.dispatch('registration/checkEmail', {email: this.email});
+                this.$refs.form.validate();
+            },
+            async resetError(propName) {
+                await this.$store.dispatch('registration/resetError', propName);
+                this.$refs.form.validate();
             }
         }
     }

@@ -16,6 +16,10 @@ class BaseController extends AbstractController
      */
     private $serializer;
 
+    /**
+     * BaseController constructor.
+     * @param SerializerInterface $serializer
+     */
     public function __construct(SerializerInterface $serializer)
     {
         $this->serializer = $serializer;
