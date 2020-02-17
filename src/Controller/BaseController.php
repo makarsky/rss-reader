@@ -9,6 +9,10 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
 
+/**
+ * Class BaseController
+ * @package App\Controller
+ */
 class BaseController extends AbstractController
 {
     /**
