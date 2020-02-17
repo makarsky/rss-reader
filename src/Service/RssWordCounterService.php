@@ -4,8 +4,13 @@ namespace App\Service;
 
 use Exception;
 use FeedIo\FeedInterface;
+use phpDocumentor\Reflection\File;
 use Symfony\Component\Finder\Finder;
 
+/**
+ * Class RssWordCounterService
+ * @package App\Service
+ */
 class RssWordCounterService
 {
     /**
@@ -13,16 +18,27 @@ class RssWordCounterService
      */
     private $projectDir;
 
+    /**
+     * RssWordCounterService constructor.
+     * @param string $projectDir
+     */
     public function __construct(string $projectDir)
     {
         $this->projectDir = $projectDir;
     }
 
+    /**
+     * @return array
+     * @throws Exception
+     */
     protected function getExcludedWords(): array
     {
         $finder = new Finder();
         $finder = $finder->in($this->projectDir . '/src/Resources')->files()->name('most_common_words.json');
 
+        /**
+         * @var File $file
+         */
         foreach ($finder as $file) {
             return json_decode($file->getContents(), true);
         }
@@ -30,6 +46,12 @@ class RssWordCounterService
         throw new Exception('most_common_words.json not found');
     }
 
+    /**
+     * @param FeedInterface $feed
+     * @param int $limit
+     * @return array
+     * @throws Exception
+     */
     public function getFrequentWords(FeedInterface $feed, int $limit = 10): array
     {
         $excludedWords = $this->getExcludedWords();

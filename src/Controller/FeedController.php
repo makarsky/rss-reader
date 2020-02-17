@@ -9,6 +9,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * Class FeedController
+ * @package App\Controller
+ */
 class FeedController extends AbstractController
 {
     /**
@@ -21,6 +25,11 @@ class FeedController extends AbstractController
      */
     private $rssWordCounterService;
 
+    /**
+     * FeedController constructor.
+     * @param FeedIo $feedIo
+     * @param RssWordCounterService $rssWordCounterService
+     */
     public function __construct(FeedIo $feedIo, RssWordCounterService $rssWordCounterService)
     {
         $this->feedIo = $feedIo;
@@ -32,6 +41,8 @@ class FeedController extends AbstractController
      */
     public function feedAction(): JsonResponse
     {
+        // TODO: add other feeds from https://www.theregister.co.uk/Design/page/feeds.html
+
         $url = 'https://www.theregister.co.uk/software/headlines.atom';
 
         $feed = $this->feedIo->read($url, new Feed())->getFeed();
