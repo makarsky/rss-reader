@@ -26,14 +26,21 @@ class FeedController extends AbstractController
     private $rssWordCounterService;
 
     /**
+     * @var string
+     */
+    private $feedUrl;
+
+    /**
      * FeedController constructor.
      * @param FeedIo $feedIo
      * @param RssWordCounterService $rssWordCounterService
+     * @param string $feedUrl
      */
-    public function __construct(FeedIo $feedIo, RssWordCounterService $rssWordCounterService)
+    public function __construct(FeedIo $feedIo, RssWordCounterService $rssWordCounterService, string $feedUrl)
     {
         $this->feedIo = $feedIo;
         $this->rssWordCounterService = $rssWordCounterService;
+        $this->feedUrl = $feedUrl;
     }
 
     /**
@@ -43,9 +50,7 @@ class FeedController extends AbstractController
     {
         // TODO: add other feeds from https://www.theregister.co.uk/Design/page/feeds.html
 
-        $url = 'https://www.theregister.co.uk/software/headlines.atom';
-
-        $feed = $this->feedIo->read($url, new Feed())->getFeed();
+        $feed = $this->feedIo->read($this->feedUrl, new Feed())->getFeed();
 
         $frequentWords = $this->rssWordCounterService->getFrequentWords($feed);
 
