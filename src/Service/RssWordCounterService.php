@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use Exception;
+use FeedIo\Feed\ItemInterface;
 use FeedIo\FeedInterface;
 use phpDocumentor\Reflection\File;
 use Symfony\Component\Finder\Finder;
@@ -58,6 +59,9 @@ class RssWordCounterService
         $words = [];
         $pattern = '/[A-Za-z]+[\'-]?[A-Za-z]+/';
 
+        /**
+         * @var ItemInterface $item
+         */
         foreach ($feed as $item) {
             $titleMatches = [];
             $descriptionMatches = [];
