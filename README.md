@@ -14,3 +14,7 @@ Installation:
 Launch:
 1. symfony server:start
 2. yarn encore dev-server
+
+Running tests:
+
+```./bin/phpunit```
