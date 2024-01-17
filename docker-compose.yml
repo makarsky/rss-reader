@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  database:
+    image: mysql:8.0.33
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: rss_reader
+    volumes:
+      - database_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin
+    environment:
+      PMA_HOST: database
+      PMA_PORT: '3306'
+    ports:
+      - '8084:80'
+
+  php:
+    build:
+      context: ./docker/php
+    ports:
+      - '84:80'
+    volumes:
+      - ./:/var/www/app
+
+volumes:
+  database_data:
