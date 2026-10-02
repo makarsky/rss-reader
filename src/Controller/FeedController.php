@@ -7,7 +7,7 @@ use FeedIo\Feed;
 use FeedIo\FeedIo;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 /**
  * Class FeedController
@@ -43,9 +43,7 @@ class FeedController extends AbstractController
         $this->feedUrl = $feedUrl;
     }
 
-    /**
-     * @Route("/api/v1/feed", name="feed")
-     */
+    #[Route('/api/v1/feed', name: 'feed')]
     public function feedAction(): JsonResponse
     {
         // TODO: add other feeds from https://www.theregister.co.uk/Design/page/feeds.html

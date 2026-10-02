@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -29,10 +29,8 @@ class BaseController extends AbstractController
         $this->serializer = $serializer;
     }
 
-    /**
-     * @Route("/", name="index")
-     * @Route("/{vueRouting}", name="vue_page", requirements={"vueRouting"="^(?!.*_wdt|_profiler|api|auth).+"})
-     */
+    #[Route('/', name: 'index')]
+    #[Route('/{vueRouting}', name: 'vue_page', requirements: ['vueRouting' => '^(?!.*_wdt|_profiler|api|auth).+'])]
     public function indexAction(): Response
     {
         /** @var User|null $user */

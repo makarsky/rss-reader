@@ -1,12 +1,17 @@
-version: '3.8'
 services:
   database:
-    image: mysql:8.0.33
+    image: mysql:9.7.2
     environment:
       MYSQL_ROOT_PASSWORD: 123456
       MYSQL_DATABASE: rss_reader
     volumes:
       - database_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-p123456", "--silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 20s
 
   phpmyadmin:
     image: phpmyadmin
@@ -15,14 +20,36 @@ services:
       PMA_PORT: '3306'
     ports:
       - '8084:80'
+    depends_on:
+      database:
+        condition: service_healthy
 
   php:
     build:
       context: ./docker/php
+    volumes:
+      - ./:/var/www/app
+    depends_on:
+      database:
+        condition: service_healthy
+
+  nginx:
+    image: nginx:1.30.4
     ports:
       - '84:80'
     volumes:
+      - ./:/var/www/app:ro
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - php
+
+  node:
+    image: node:26.10.0
+    working_dir: /var/www/app
+    volumes:
       - ./:/var/www/app
+    command: sh -c "npm ci && npm run watch"
+    init: true
 
 volumes:
   database_data:

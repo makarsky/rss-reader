@@ -4,12 +4,14 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\RegistrationFormType;
+use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 
 /**
@@ -24,21 +26,38 @@ class RegistrationController extends AbstractController
     private $serializer;
 
     /**
+     * @var EntityManagerInterface
+     */
+    private $entityManager;
+
+    /**
+     * @var UserRepository
+     */
+    private $userRepository;
+
+    /**
      * RegistrationController constructor.
      * @param SerializerInterface $serializer
+     * @param EntityManagerInterface $entityManager
+     * @param UserRepository $userRepository
      */
-    public function __construct(SerializerInterface $serializer)
-    {
+    public function __construct(
+        SerializerInterface $serializer,
+        EntityManagerInterface $entityManager,
+        UserRepository $userRepository
+    ) {
         $this->serializer = $serializer;
+        $this->entityManager = $entityManager;
+        $this->userRepository = $userRepository;
     }
 
     /**
-     * @Route("/auth/register", name="register")
      * @param Request $request
-     * @param UserPasswordEncoderInterface $passwordEncoder
+     * @param UserPasswordHasherInterface $passwordHasher
      * @return Response
      */
-    public function registerAction(Request $request, UserPasswordEncoderInterface $passwordEncoder): Response
+    #[Route('/auth/register', name: 'register')]
+    public function registerAction(Request $request, UserPasswordHasherInterface $passwordHasher): Response
     {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
@@ -48,15 +67,14 @@ class RegistrationController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $user->setPassword(
-                $passwordEncoder->encodePassword(
+                $passwordHasher->hashPassword(
                     $user,
                     $form->get('plainPassword')->getData()
                 )
             );
 
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($user);
-            $entityManager->flush();
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
 
             return new JsonResponse([], Response::HTTP_OK, []);
         }
@@ -71,14 +89,14 @@ class RegistrationController extends AbstractController
     }
 
     /**
-     * @Route("/auth/check-email", name="checkEmail")
      * @param Request $request
      * @return Response
      */
+    #[Route('/auth/check-email', name: 'checkEmail')]
     public function checkEmailAction(Request $request): Response
     {
         $email = trim(json_decode($request->getContent(), true)['email']);
-        $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(['email' => $email]);
+        $user = $this->userRepository->findOneBy(['email' => $email]);
 
         $data = is_null($user) ? [] : [
             'errors' => [

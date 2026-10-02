@@ -65,8 +65,8 @@ class RssWordCounterService
         foreach ($feed as $item) {
             $titleMatches = [];
             $descriptionMatches = [];
-            preg_match_all($pattern, stripcslashes(strip_tags($item->getTitle())), $titleMatches);
-            preg_match_all($pattern, stripcslashes(strip_tags($item->getDescription())), $descriptionMatches);
+            preg_match_all($pattern, stripcslashes(strip_tags((string) $item->getTitle())), $titleMatches);
+            preg_match_all($pattern, stripcslashes(strip_tags((string) $item->getContent())), $descriptionMatches);
             $words = array_merge($words, $titleMatches[0], $descriptionMatches[0]);
         }
         $wordCounts = array_count_values($words);

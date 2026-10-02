@@ -34,3 +34,6 @@ services:
     App\Controller\FeedController:
         arguments:
             $feedUrl: '%feed_url%'
+
+    FeedIo\FeedIo:
+        factory: ['@App\Factory\FeedIoFactory', '__invoke']
