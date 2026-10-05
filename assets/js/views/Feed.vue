@@ -12,7 +12,7 @@
                     v-if="isLoading"
                     align="center"
                     justify="center"
-                    class="grey lighten-5 full-height"
+                    class="bg-grey-lighten-5 full-height"
             >
                 <div class="text-center">
                     <v-progress-circular
@@ -34,8 +34,8 @@
 </template>
 
 <script>
-    import FrequentWords from '../components/FrequentWords';
-    import FeedItems from '../components/FeedItems';
+    import FrequentWords from '../components/FrequentWords.vue';
+    import FeedItems from '../components/FeedItems.vue';
 
     export default {
         name: 'Feed',

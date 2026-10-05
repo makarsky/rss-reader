@@ -11,14 +11,13 @@
             <v-card class="elevation-12">
                 <v-toolbar
                         color="primary"
-                        dark
-                        flat
+                        elevation="0"
                 >
                     <v-toolbar-title>Login form</v-toolbar-title>
                     <v-spacer/>
                     <v-tooltip>
-                        <template v-slot:activator="{ on }">
-                            <v-icon>mdi-key</v-icon>
+                        <template v-slot:activator="{ props }">
+                            <v-icon v-bind="props">mdi-key</v-icon>
                         </template>
                         <span>Source</span>
                     </v-tooltip>
@@ -29,7 +28,7 @@
                                 label="Email"
                                 v-model="email"
                                 name="login"
-                                prepend-icon="person"
+                                prepend-icon="mdi-account"
                                 type="text"
                         />
 
@@ -38,7 +37,7 @@
                                 v-model="password"
                                 label="Password"
                                 name="password"
-                                prepend-icon="lock"
+                                prepend-icon="mdi-lock"
                                 type="password"
                         />
                     </v-card-text>
@@ -58,19 +57,19 @@
             </v-card>
             <v-snackbar
                     v-model="snackbar"
-                    :top="true"
-                    :bottom="false"
-                    :color="'error'"
+                    location="top"
+                    color="error"
                     :timeout="2000"
             >
                 Invalid credentials
-                <v-btn
-                        dark
-                        text
-                        @click="snackbar = false"
-                >
-                    Close
-                </v-btn>
+                <template v-slot:actions>
+                    <v-btn
+                            variant="text"
+                            @click="snackbar = false"
+                    >
+                        Close
+                    </v-btn>
+                </template>
             </v-snackbar>
         </v-col>
     </v-row>

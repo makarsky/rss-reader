@@ -11,8 +11,7 @@
             <v-card class="elevation-12">
                 <v-toolbar
                         color="primary"
-                        dark
-                        flat
+                        elevation="0"
                 >
                     <v-toolbar-title>Registration form</v-toolbar-title>
                 </v-toolbar>
@@ -23,9 +22,9 @@
                                 v-model="email"
                                 :rules="emailRules"
                                 name="email"
-                                prepend-icon="person"
+                                prepend-icon="mdi-account"
                                 type="text"
-                                @input="checkEmail"
+                                @update:model-value="checkEmail"
                                 required
                         />
                         <v-text-field
@@ -34,9 +33,9 @@
                                 :rules="plainPasswordRules"
                                 label="Password"
                                 name="password"
-                                prepend-icon="lock"
+                                prepend-icon="mdi-lock"
                                 type="password"
-                                @input="resetError('plainPassword')"
+                                @update:model-value="resetError('plainPassword')"
                                 required
                         />
                     </v-form>
@@ -104,16 +103,16 @@
                 if (!this.$store.getters['registration/hasRegistrationErrors']) {
                     this.$router.push({path: '/login'});
                 } else {
-                    this.$refs.form.validate();
+                    await this.$refs.form.validate();
                 }
             },
             async checkEmail() {
                 await this.$store.dispatch('registration/checkEmail', {email: this.email});
-                this.$refs.form.validate();
+                await this.$refs.form.validate();
             },
             async resetError(propName) {
                 await this.$store.dispatch('registration/resetError', propName);
-                this.$refs.form.validate();
+                await this.$refs.form.validate();
             }
         }
     }

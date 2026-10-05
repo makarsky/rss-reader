@@ -1,16 +1,13 @@
-import Vue from 'vue';
-import VueRouter from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
 import store from './store';
-import Feed from './views/Feed';
-import Login from './views/Login';
-import Registration from './views/Registration';
+import Feed from './views/Feed.vue';
+import Login from './views/Login.vue';
+import Registration from './views/Registration.vue';
 
-Vue.use(VueRouter);
-
-const router = new VueRouter({
-    mode: 'history',
+const router = createRouter({
+    history: createWebHistory(),
     routes: [
-        {path: '*', redirect: '/login'},
+        {path: '/:pathMatch(.*)*', redirect: '/login'},
         {path: '/login', name: 'login', component: Login},
         {path: '/registration', name: 'registration', component: Registration},
         {path: '/feed', name: 'feed', component: Feed, meta: {requiresAuth: true}},

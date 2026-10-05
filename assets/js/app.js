@@ -1,20 +1,34 @@
-import Vue from 'vue';
-import Vuetify from 'vuetify';
-import 'vuetify/dist/vuetify.min.css';
-import '@mdi/font/css/materialdesignicons.min.css';
-import 'material-design-icons-iconfont/dist/material-design-icons.css';
-import Routes from './routes.js';
-import App from './views/App';
+import { createApp } from 'vue';
+import { createVuetify } from 'vuetify';
+import * as components from 'vuetify/components';
+import * as directives from 'vuetify/directives';
+import { aliases, mdi } from 'vuetify/iconsets/mdi';
+import 'vuetify/styles';
+import '@mdi/font/css/materialdesignicons.css';
+import App from './views/App.vue';
+import router from './routes.js';
 import store from './store';
 
-Vue.use(Vuetify);
+const root = document.getElementById('app');
+const isAuthenticated = JSON.parse(root.dataset.isAuthenticated);
+const user = JSON.parse(root.dataset.user);
 
-const app = new Vue({
-    el: '#app',
-    vuetify: new Vuetify({}),
-    router: Routes,
-    store,
-    render: h => h(App),
+store.dispatch('security/onRefresh', { isAuthenticated, user });
+
+const vuetify = createVuetify({
+    components,
+    directives,
+    icons: {
+        defaultSet: 'mdi',
+        aliases,
+        sets: { mdi },
+    },
 });
+
+const app = createApp(App);
+app.use(store);
+app.use(router);
+app.use(vuetify);
+app.mount('#app');
 
 export default app;

@@ -1,11 +1,11 @@
 <template>
     <v-app>
-        <v-content>
+        <v-main>
             <v-container fluid>
                 <router-view>
                 </router-view>
             </v-container>
-        </v-content>
+        </v-main>
     </v-app>
 </template>
 
@@ -19,12 +19,6 @@
             },
         },
         created() {
-            let isAuthenticated = JSON.parse(this.$parent.$el.attributes['data-is-authenticated'].value),
-                user = JSON.parse(this.$parent.$el.attributes['data-user'].value);
-
-            let payload = { isAuthenticated: isAuthenticated, user: user };
-            this.$store.dispatch('security/onRefresh', payload);
-
             axios.interceptors.response.use(undefined, (err) => {
                 return new Promise(() => {
                     if (err.response.status === 401) {
